@@ -13,7 +13,7 @@ exports.postAddProducts = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-    Product.fetchAll((products) => {
+    Product.fetchAll().then(products => {
         res.render('shop', {
             prods: products,
             pageTitle: 'Shop',
@@ -21,5 +21,7 @@ exports.getProducts = (req, res) => {
             path: '/',
             hasProducts: products.length > 0
         });
+    }).catch(err => {
+        console.error(err);
     });
 };
