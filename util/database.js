@@ -2,7 +2,6 @@ const mongodb = require('mongodb');
 const mongoClient = mongodb.MongoClient;
 
 let _db;
-
 const mongoConnect = (callback) => {
     mongoClient.connect('mongodb+srv://Himal-Marasini:d9N5RVJwphhMJVaq@shop-fkcaf.mongodb.net/shop?retryWrites=true&w=majority', {
         useNewUrlParser: true

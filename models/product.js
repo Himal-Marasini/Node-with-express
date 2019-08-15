@@ -3,19 +3,22 @@ const getDb = require('../util/database').getDb;
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
-    this._id = new mongodb.ObjectId(id);
+
+    this._id = id ? new mongodb.ObjectId(id) : null;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
+    // this.userId = userId;
   }
 
   save() {
     const db = getDb();
     let dbop;
+
     if (this._id) {
       dbop = db.collection('product').updateOne({
-        _id: id
+        _id: this._id
       }, {
         $set: this
       });
@@ -23,7 +26,7 @@ module.exports = class Product {
       dbop = db.collection('product').insertOne(this);
     }
     return dbop.then(result => {
-      console.log(result.ops[0]);
+      return result;
     }).catch(err => {
       console.error(err);
     });
@@ -31,9 +34,8 @@ module.exports = class Product {
 
   static fetchAll() {
     const db = getDb();
-    return db.collection('product').find()
+    return db.collection('product').find().toArray()
       .then((result) => {
-        console.log(result);
         return result;
       })
       .catch(err => {
@@ -41,15 +43,16 @@ module.exports = class Product {
       });
   }
 
-  static findById(id) {
+  static findbyId(id) {
     const db = getDb();
     return db.collection('product').find({
         _id: new mongodb.ObjectId(id)
       })
+      .next()
       .then(product => {
-        console.log(product);
         return product;
-      }).catch(err => {
+      })
+      .catch(err => {
         console.error(err);
       });
   }
