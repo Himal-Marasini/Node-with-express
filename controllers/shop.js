@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
@@ -71,13 +70,11 @@ exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
   Product.findbyId(productId)
     .then(product => {
-      // Cart.addProduct(productId, product.price);
-      console.log('Hello');
-      return res.redirect('/cart');
-    })
-    .catch(err => {
-      console.error(err);
+      return req.user.addToCart(product);
+    }).then(result => {
+      console.log(result);
     });
+
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
@@ -88,6 +85,9 @@ exports.postCartDeleteProduct = (req, res, next) => {
   });
 };
 
+
+
+// This bottom part should be work later on
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
     path: '/orders',
